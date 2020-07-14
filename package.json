@@ -1,0 +1,50 @@
+{
+    "name": "adonis-resolver",
+    "version": "1.0.0",
+    "description": "Atom plugin to jump to an Adonis module's file from its use/make statement",
+    "main": "index.js",
+    "license": "MIT",
+    "activationEvents": [
+        "adonis-resolver:open-selected-dependencies"
+    ],
+    "scripts": {},
+    "author": {
+        "name": "Ricky Talbot",
+        "email": "rickytalbot@hotmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "dependencies": {
+        "astw": "^1.2.0",
+        "clone": "^0.1.17",
+        "esprima": "^4.0.1",
+        "file-position": "0.0.0",
+        "static-eval": "^0.2.3"
+    },
+    "devDependencies": {},
+    "package-deps": [
+        "hyperclick"
+    ],
+    "providedServices": {
+        "hyperclick.provider": {
+            "versions": {
+                "0.0.0": "provideAdonisHyperclick"
+            }
+        }
+    },
+    "keywords": [
+        "adonis",
+        "atom",
+        "require",
+        "plugin",
+        "resolve",
+        "file",
+        "navigation"
+    ],
+    "homepage": "",
+    "bugs": {
+        "url": ""
+    }
+}
