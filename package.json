@@ -14,7 +14,7 @@
     },
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/cooliojazz/atom-adonis-resolver"
     },
     "dependencies": {
         "astw": "^1.2.0",
@@ -43,8 +43,8 @@
         "file",
         "navigation"
     ],
-    "homepage": "",
+    "homepage": "https://github.com/cooliojazz/atom-adonis-resolver",
     "bugs": {
-        "url": ""
+        "url": "https://github.com/cooliojazz/atom-adonis-resolver/issues"
     }
 }
