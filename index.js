@@ -71,7 +71,10 @@ function handleAstNode(ranges, dir, lookup) {
         let adonisDir = path.resolve(dir, "node_modules", "@adonisjs");
         for (let subDir of fs.readdirSync(adonisDir)) {
             let srcDir = path.resolve(adonisDir, subDir, "src");
-            if (fs.existsSync(srcDir)) checkSubModules(srcDir, name)
+            if (fs.existsSync(srcDir)) {
+                let ret = checkSubModules(srcDir, name);
+                if (ret) return ret;
+            }
         }
 
         // Need an inexpensive way to check every other module for any possible class Adonis might know about,
