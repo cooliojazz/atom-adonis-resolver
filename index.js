@@ -8,21 +8,22 @@ const fs = require('fs');
 const {Point, Range} = require('atom');
 
 exports.activate = function() {
-    atom.commands.add('atom-workspace', {'adonis-resolver:open-selected-dependencies': handleOpenDependencies})
+    atom.commands.add('atom-workspace', {'adonis-resolver:open-selected-dependencies': handleOpenDependencies});
 }
 
 exports.provideAdonisHyperclick = function() {
     return {
         providerName: "atom-adonis-resolver",
         priority: 0,
-        wordRegExp: /(use|make)\s*\(\s*["'].+?["']\s*\)/g,
+        wordRegExp: /(use|make)\s*\(\s*["'].+?["']\s*\)|(@component|@!component|@extends|@layout|@include)\s*\(\s*["'].+?["']\s*[),]/g,
         getSuggestionForWord: function(editor, string, range) {
             // Does not properly handle the case that a use call spans multiple lines, but wordRegExp seems to prevent that anyways.
             let match = string.match(/'(.+)'/);
             let start = range.start.column + match.index + 1;
             let end = start + match[1].length;
             return new Promise(r => r({range: new Range(new Point(range.start.row, start), new Point(range.start.row, end)), callback: handleOpenDependencies}));
-        }
+        },
+        grammarScopes: ["source.js", "source.ts", "text.html.edge"]
     };
 };
 
@@ -31,11 +32,22 @@ function handleOpenDependencies() {
     let ranges = editor.getSelectedBufferRanges().slice();
     let dir = atom.project.getPaths().filter(p => editor.getPath().includes(p))[0];
     let src = editor.getBuffer().getText();
-    let ast = esprima.parse(src, {loc: true});
 
-    astw(ast)(handleAstNode(ranges, dir, position(src)));
+    switch(editor.languageMode.grammar.scopeName) {
+        case "source.js":
+        case "source.ts": {
+            let ast = esprima.parse(src, {loc: true});
+            astw(ast)(handleAstNode(ranges, dir, position(src)));
+            break;
+        }
+        case "text.html.edge": {
+            handleEdge(editor, ranges, dir);
+            break;
+        }
+    }
 }
 
+// This should be re-written to use the build in parsing trees instead of constructing our own
 function handleAstNode(ranges, dir, lookup) {
     return node => {
         if (!(nodeIs("use")(node) || nodeIs("make")(node))) return;
@@ -80,15 +92,32 @@ function handleAstNode(ranges, dir, lookup) {
         // Need an inexpensive way to check every other module for any possible class Adonis might know about,
         // for now classes from other non-adonis modules and some odly named classes will not be found
 
-        return atom.notifications.addWarning("No source for module ''" + name + "'' found.")
+        return atom.notifications.addWarning("No source for module ''" + name + "'' found.");
     };
+}
+
+function handleEdge(editor, ranges, dir) {
+    let tokenLines = editor.getBuffer().getLanguageMode().tokenizedLines;
+
+    for (let range of ranges) {
+        let tokenLine = tokenLines[range.start.row];
+        let token = tokenLine.tokenAtBufferColumn(range.start.column);
+
+        if (token.scopes.includes("string.quoted.single.js")) {
+            let file = path.resolve(dir, "resources", "views", token.value.replace(/\./g, '/') + ".edge");
+            if (fs.existsSync(file)) return atom.workspace.open(file);
+
+            return atom.notifications.addWarning("Source for ''" + token.value + "'' not found at expected location (" + file + ").");
+        }
+
+    }
+    return atom.notifications.addError("Cannot go to file at this location.");
 }
 
 function checkSubModules(dir, name) {
     if (fs.lstatSync(dir).isDirectory()) {
         //Simple check for major classes
         let modDir = path.resolve(dir, name);
-        console.log(modDir);
         if (fs.existsSync(modDir)) return atom.workspace.open(path.resolve(modDir, "index.js"));
 
         //Search for lesser classes
