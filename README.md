@@ -1,6 +1,7 @@
 # adonis-resolver
 
 Atom plugin to jump to either a module's file from its use or make statement in a Javascript file or an included template from it's @[!]component/@include/@extends/@layout statement in an Edge file.
+NOTE: The grammar for Edge files is not included in this plugin, so to follow links in them a plugin such as [Edge](https://atom.io/packages/edge) is needed.
 
 ## Usage
 
