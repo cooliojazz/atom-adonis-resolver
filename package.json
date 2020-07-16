@@ -1,7 +1,7 @@
 {
     "name": "adonis-resolver",
     "version": "0.4.0",
-    "description": "Atom plugin to jump to an Adonis module's file from its use/make statement",
+    "description": "Atom plugin to resolve dependencies in Adonis Javascript or Edge files.",
     "main": "index.js",
     "license": "MIT",
     "activationEvents": [
@@ -19,13 +19,7 @@
         "type": "git",
         "url": "https://github.com/cooliojazz/atom-adonis-resolver"
     },
-    "dependencies": {
-        "astw": "^1.2.0",
-        "clone": "^0.1.17",
-        "esprima": "^4.0.1",
-        "file-position": "0.0.0",
-        "static-eval": "^0.2.3"
-    },
+    "dependencies": {},
     "devDependencies": {},
     "package-deps": [
         "hyperclick"
@@ -40,7 +34,14 @@
     "keywords": [
         "adonis",
         "atom",
-        "require",
+        "javascript",
+        "use",
+        "make",
+        "edge",
+        "@component",
+        "@extends",
+        "@include",
+        "@layout",
         "plugin",
         "resolve",
         "file",
