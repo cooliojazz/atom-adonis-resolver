@@ -1,6 +1,6 @@
 {
     "name": "adonis-resolver",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "description": "Atom plugin to resolve dependencies in Adonis Javascript or Edge files.",
     "main": "index.js",
     "license": "MIT",
