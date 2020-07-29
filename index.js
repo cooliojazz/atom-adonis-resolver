@@ -47,9 +47,12 @@ function handleJs(editor, ranges, dir) {
 
         if (token.scopes.includes("string.quoted")) {
             // First if it's a project file
+            if (!fs.existsSync(dir + "/package.json")) return atom.notifications.addError("A package.json is required to find project files.");
+            let autoloads = JSON.parse(fs.readFileSync(dir + "/package.json")).autoload;
             let parts = token.value.slice(1, -1).split('/');
+            for (k in autoloads) parts[0] = parts[0].replace(k, autoloads[k]);
             let name = parts[parts.length - 1];
-            let file = path.resolve(dir, parts[0].toLowerCase(), parts.slice(1, parts.length - 1).join('/'), name + ".js");
+            let file = path.resolve(dir, parts[0], parts.slice(1, parts.length - 1).join('/'), name + ".js");
             if (fs.existsSync(file)) return atom.workspace.open(file);
 
             // Then if it's an Adonis file
